@@ -598,7 +598,7 @@ function! llama#fim(pos_x, pos_y, is_auto, prev, use_cache) abort
         \ 't_max_prompt_ms':  g:llama_config.t_max_prompt_ms,
         \ 't_max_predict_ms': l:t_max_predict_ms,
         \ 'response_fields':  [
-        \                       "content",
+        \                       "response",
         \                       "timings/prompt_n",
         \                       "timings/prompt_ms",
         \                       "timings/prompt_per_token_ms",
@@ -763,12 +763,12 @@ function! s:fim_try_hint(pos_x, pos_y)
                     continue
                 endif
 
-                let l:response['content'] = l:response['content'][i + 1:]
-                if len(l:response['content']) > 0
+                let l:response['response'] = l:response['response'][i + 1:]
+                if len(l:response['response']) > 0
                     if l:raw == v:null
                         let l:raw = json_encode(l:response)
-                    elseif len(l:response['content']) > l:best
-                        let l:best = len(l:response['content'])
+                    elseif len(l:response['response']) > l:best
+                        let l:best = len(l:response['response'])
                         let l:raw = json_encode(l:response)
                     endif
                 endif
@@ -781,7 +781,7 @@ function! s:fim_try_hint(pos_x, pos_y)
 
         " run async speculative FIM in the background for this position
         if s:hint_shown
-            call llama#fim(l:pos_x, l:pos_y, v:true, s:fim_data['content'], v:true)
+            call llama#fim(l:pos_x, l:pos_y, v:true, s:fim_data['response'], v:true)
         endif
     endif
 endfunction
@@ -812,7 +812,7 @@ function! s:fim_render(pos_x, pos_y, data)
     if l:can_accept
         let l:response = json_decode(l:raw)
 
-        for l:part in split(get(l:response, 'content', ''), "\n", 1)
+        for l:part in split(get(l:response, 'response', ''), "\n", 1)
             call add(l:content, l:part)
         endfor
 
@@ -1006,7 +1006,7 @@ function! s:fim_render(pos_x, pos_y, data)
     let s:fim_data['line_cur'] = l:line_cur
 
     let s:fim_data['can_accept'] = l:can_accept
-    let s:fim_data['content']    = l:content
+    let s:fim_data['response']    = l:content
 endfunction
 
 " if accept_type == 'full', accept entire response
@@ -1019,7 +1019,7 @@ function! llama#fim_accept(accept_type)
     let l:line_cur = s:fim_data['line_cur']
 
     let l:can_accept = s:fim_data['can_accept']
-    let l:content    = s:fim_data['content']
+    let l:content    = s:fim_data['response']
 
     if l:can_accept && len(l:content) > 0
         " insert suggestion on current line
