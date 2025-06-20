@@ -43,8 +43,9 @@ highlight default llama_hl_info guifg=#77ff2f ctermfg=119
 "   keymap_accept_word: keymap to accept word suggestion, default: <C-B>
 "
 let s:default_config = {
-    \ 'endpoint':           'http://127.0.0.1:8012/infill',
+    \ 'endpoint':           'http://127.0.0.1:11434/generate',
     \ 'api_key':            '',
+    \ 'model':              'qwen2.5-coder',
     \ 'n_prefix':           256,
     \ 'n_suffix':           64,
     \ 'n_predict':          128,
