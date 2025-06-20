@@ -759,7 +759,7 @@ function! s:fim_try_hint(pos_x, pos_y)
                 endif
 
                 let l:response = json_decode(l:response_cached)
-                if l:response['content'][0:i] !=# l:removed
+                if l:response['response'][0:i] !=# l:removed
                     continue
                 endif
 
